@@ -29,8 +29,7 @@
   let valid_from = new Date()
   let valid_to = new Date()
   let use_limit = 1
-  let is_qr = true
-  let is_buttonable = true
+  let qr_or_button = 'qr'
   let id = 0
 
   /**
@@ -70,8 +69,8 @@
         valid_to: new Date(valid_to).toISOString().split('Z')[0], // removes traling timezone
         use_limit,
         stores: [],
-        is_qr,
-        is_buttonable,
+        is_qr: qr_or_button === 'qr',
+        is_buttonable: qr_or_button === 'button',
         category: categories.join('|'),
         area: areas.join('|'),
       }),
@@ -96,8 +95,8 @@
         valid_from: new Date(valid_from).toISOString().split('Z')[0], // removes traling timezone
         valid_to: new Date(valid_to).toISOString().split('Z')[0], // removes traling timezone
         use_limit,
-        is_qr,
-        is_buttonable,
+        is_qr: qr_or_button === 'qr',
+        is_buttonable: qr_or_button === 'button',
         category: categories.join('|'),
         area: areas.join('|'),
       }),
@@ -145,6 +144,7 @@
     use_limit = 1
     id = 0
     is_loading = ''
+    qr_or_button = 'qr'
   }
 
   /**
@@ -158,6 +158,7 @@
     valid_from = bp ? bp.valid_from : ''
     valid_to = bp ? bp.valid_to : ''
     use_limit = bp ? bp.use_limit : 1
+    qr_or_button = bp && bp.is_buttonable ? 'button' : 'qr'
     categories = bp ? bp.category.split('|') : []
     areas = bp ? bp.area.split('|') : []
   }
@@ -173,7 +174,7 @@
   <div class="grid grid-cols-1 gap-2">
     <label><input class="px-1 rounded-sm w-full" bind:value={title} placeholder="見出し" /></label>
     <label
-      ><textarea class="px-1 rounded-sm w-full" bind:value={content} placeholder="テキスト" rows="5"/>
+      ><textarea class="px-1 rounded-sm w-full" bind:value={content} placeholder="テキスト" rows="5" />
       <label><input class="px-1 rounded-sm w-full" bind:value={image} placeholder="画像URI" /></label>
       <label
         >日付から<input
@@ -209,14 +210,7 @@
   <div class="grid grid-cols-1 gap-2">
     <div>
       <span>地域</span>
-      <Select
-        class="mt-0 pt-0"
-        items={availableAreas}
-        selectedValue={areas}
-        isMulti={true}
-        on:select={selectArea}
-        placeholder={''}
-      />
+      <Select items={availableAreas} selectedValue={areas} isMulti={true} on:select={selectArea} placeholder={''} />
     </div>
     <div>
       <span>カテゴリー</span>
@@ -229,13 +223,27 @@
       />
     </div>
     <label class="flex items-center">
-      <input class="mr-2 form-checkbox h-6 w-6" type="checkbox" bind:checked={is_qr} placeholder="QR" />
+      <input
+        class="mr-2 form-radio h-6 w-6"
+        type="radio"
+        name="qrbutton"
+        bind:group={qr_or_button}
+        value="qr"
+        placeholder="QR"
+      />
       <Fa icon={faQrcode} color="grey" class="h-6 w-6" />
       <span class="ml-2">QR</span>
     </label>
 
     <label class="flex items-center">
-      <input class="mr-2 form-checkbox h-6 w-6" type="checkbox" bind:checked={is_buttonable} placeholder="QR" />
+      <input
+        class="mr-2 form-radio h-6 w-6"
+        type="radio"
+        name="qrbutton"
+        bind:group={qr_or_button}
+        value="button"
+        placeholder="QR"
+      />
       <Fa icon={faHandPointUp} color="grey" class="h-6 w-6" />
       <span class="ml-2">ボタン</span>
     </label>
